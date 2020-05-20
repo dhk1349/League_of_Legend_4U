@@ -1,0 +1,8 @@
+README.md
+setup.py
+ApiLib/APIs.py
+ApiLib/__init__.py
+lolapikr.egg-info/PKG-INFO
+lolapikr.egg-info/SOURCES.txt
+lolapikr.egg-info/dependency_links.txt
+lolapikr.egg-info/top_level.txt

@@ -5,7 +5,6 @@ Created on Sun May 17 19:56:27 2020
 @author: dhk13
 """
 import requests
-api_key='RGAPI-42d8eba6-193c-4cbe-b96c-e7d2817b8010'
 summoner="코코낸내2"
 
 def GetSummonerInfo(summoner_name , api_key):
@@ -52,6 +51,7 @@ How To Get Match Data
 5. Get Match Info
 """
 #AvdVLfFbT-wZJV2fPrX_uE6l2eZpuFjvKbN1622JMafmRcE
+"""
 res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/AvdVLfFbT-wZJV2fPrX_uE6l2eZpuFjvKbN1622JMafmRcE"+'?api_key='+api_key
 r=requests.get(res)
 #print(r.json())
@@ -63,3 +63,4 @@ print(r.json()['matches'][0])
 res = "https://kr.api.riotgames.com/lol/match/v4/matches/"+str(r.json()['matches'][0]['gameId'])+'?api_key='+api_key
 r=requests.get(res)
 print(r.json())
+"""

@@ -8,8 +8,8 @@ Created on Tue May 19 15:27:48 2020
 import setuptools
 
 setuptools.setup(
-    name="lolapi",
-    version="1.0",
+    name="lolapikr",
+    version="1.0.0",
     license='MIT',
     author="dhk1349",
     author_email="dhk1349@gmail.com",
