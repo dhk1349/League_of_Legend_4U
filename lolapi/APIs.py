@@ -62,6 +62,26 @@ for i in result:
     print(i['leaguePoints'])
 """
 
+def GetMachdata(enc_summoner_id, api_key):
+    res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/"+enc_summoner_id+'?api_key='+api_key
+    r=requests.get(res)
+    if(r.status_code==200):
+        #print(sorted(r.json()['entries'], key=lambda summoner:summoner['leaguePoints'], reverse=True))
+        enc_acc_id=r.json()['accountId']
+        res = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+enc_acc_id+'?api_key='+api_key
+        r=requests.get(res)
+        if(r.status_code==200):
+            return r.json()['matches']
+        elif(r.status_code==429):
+            return False
+        else:
+            print("Check api key or other problems.")
+            
+    elif(r.status_code==429):
+        return False
+    else:
+        print("Check api key or other problems.")
+    
 
 """
 How To Get Match Data
