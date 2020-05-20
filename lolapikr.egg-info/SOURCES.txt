@@ -1,7 +1,7 @@
 README.md
 setup.py
-ApiLib/APIs.py
-ApiLib/__init__.py
+lolapi/APIs.py
+lolapi/__init__.py
 lolapikr.egg-info/PKG-INFO
 lolapikr.egg-info/SOURCES.txt
 lolapikr.egg-info/dependency_links.txt

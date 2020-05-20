@@ -9,7 +9,7 @@ import setuptools
 
 setuptools.setup(
     name="lolapikr",
-    version="1.0.0",
+    version="1.0.1",
     license='MIT',
     author="dhk1349",
     author_email="dhk1349@gmail.com",
