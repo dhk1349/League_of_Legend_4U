@@ -8,6 +8,7 @@ import requests
 import time
 summoner="코코낸내2"
 
+
 def GetSummonerInfo(summoner_name , api_key):
     res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" +summoner_name +'?api_key=' + api_key
     r = requests.get(res)
@@ -53,7 +54,9 @@ def GetChallengerDiv(api_key):
         #print(sorted(r.json()['entries'], key=lambda summoner:summoner['leaguePoints'], reverse=True))
         return sorted(r.json()['entries'], key=lambda summoner:summoner['leaguePoints'], reverse=True)
     elif(r.status_code==429):
-        return False
+        time.sleep(10)
+        print("waiting")
+        return GetChallengerDiv(api_key)
     else:
         print("Check api key or other problems.")
 """
@@ -62,6 +65,20 @@ for i in result:
     print(i['leaguePoints'])
 """
 
+def GetEncId(sumname, api_key):
+    res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+sumname+'?api_key='+api_key
+    r=requests.get(res)
+    #print(r.json())
+    if(r.status_code==429):
+        print("waiting")
+        time.sleep(10)
+        return GetEncId(sumname, api_key)
+    elif(r.status_code==200):
+        enc_id=r.json()['accountId']
+        return enc_id
+    else:
+        print(r.status_code)
+        
 def GetMachdata(enc_summoner_id, api_key):
     res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/"+enc_summoner_id+'?api_key='+api_key
     r=requests.get(res)
@@ -78,10 +95,33 @@ def GetMachdata(enc_summoner_id, api_key):
             print("Check api key or other problems.")
             
     elif(r.status_code==429):
-        return False
+        time.sleep(10)
+        print("waiting")
+        return GetMatchdata(enc_summoner_id, api_key)
     else:
         print("Check api key or other problems.")
-    
+
+
+def ChallengerDivTable(api_key, option):
+    chall=GetChallengerDiv(api_key)
+    result=[]
+    print(len(chall), " of challengers detected")
+    for i in chall:
+        elem=[]
+        elem.append(GetEncId(i['summonerName'], api_key))
+        elem.append(i['summonerId'])
+        elem.append(i['summonerName'])
+        elem.append(i['rank'])
+        elem.append(i['leaguePoints'])
+        result.append(elem)
+        print(elem)
+    if option=="-t":
+        f=open("ChallengerDiv.txt", "w")
+        for i in result:
+            f.write(str(i)+"\n")
+        f.close()
+    return result
+        
 
 """
 How To Get Match Data
