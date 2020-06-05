@@ -79,29 +79,31 @@ def GetEncId(sumname, api_key):
     else:
         print(r.status_code)
         
-def GetMachdata(enc_summoner_id, api_key):
-    res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/"+enc_summoner_id+'?api_key='+api_key
+def GetMachList(enc_acc_id, api_key):
+    res = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+enc_acc_id+'?api_key='+api_key
     r=requests.get(res)
     if(r.status_code==200):
-        #print(sorted(r.json()['entries'], key=lambda summoner:summoner['leaguePoints'], reverse=True))
-        enc_acc_id=r.json()['accountId']
-        res = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+enc_acc_id+'?api_key='+api_key
-        r=requests.get(res)
-        if(r.status_code==200):
-            return r.json()['matches']
-        elif(r.status_code==429):
-            return False
-        else:
-            print("Check api key or other problems.")
-            
+        return r.json()['matches']
     elif(r.status_code==429):
         time.sleep(10)
         print("waiting")
         return GetMatchdata(enc_summoner_id, api_key)
     else:
         print("Check api key or other problems.")
-
-
+            
+    
+def GetMatchData(match_id, api_key):
+    res = "https://kr.api.riotgames.com/lol/match/v4/matches/"+str(match_id)+'?api_key='+api_key
+    r=requests.get(res)
+    if(r.status_code==200):
+        return r.json()
+    elif(r.status_code==429):
+        time.sleep(10)
+        print("waiting")
+        return GetMatchData(match_id, api_key)
+    else:
+        print("Check api key or other problems.")
+        
 def ChallengerDivTable(api_key, option):
     chall=GetChallengerDiv(api_key)
     result=[]
@@ -121,7 +123,30 @@ def ChallengerDivTable(api_key, option):
             f.write(str(i)+"\n")
         f.close()
     return result
-        
+
+def MatchDataTable(inputs,api_key):
+    #Enc_ID, Match_ID, Champion, Result
+    result=[]
+    for i in inputs:
+        #enc_acc_id=i['summonerId']    
+        enc_acc_id=i
+        matchlist=GetMachList(enc_acc_id, api_key)
+        print(len(matchlist)," of games detected with ", i)
+        elem=[enc_acc_id, 0,0,0]
+        for j in matchlist:
+            GameData=GetMatchData(j['gameId'], api_key)
+            # print(GameData)
+            elem[1]=j['gameId']
+            elem[2]=[]
+            for k in GameData['participants']:
+                elem[2].append([k['teamId'], k['championId']])
+            elem[3]=[]
+            for k in GameData['teams']:
+                elem[3].append([k['teamId'], k['win']])
+            print (elem)
+    return 
+
+MatchDataTable(["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78"], "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961")
 
 """
 How To Get Match Data
