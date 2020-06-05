@@ -6,7 +6,14 @@ Created on Sun May 17 19:56:27 2020
 """
 import requests
 import time
+import json
 summoner="코코낸내2"
+
+with open('champion.json',encoding='UTF8') as json_file:
+    champion_parser = json.load(json_file)['data']
+champion={}
+for name, data in champion_parser.items():
+    champion[str(data['key'])]=name
 
 
 def GetSummonerInfo(summoner_name , api_key):
@@ -83,11 +90,16 @@ def GetMachList(enc_acc_id, api_key):
     res = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+enc_acc_id+'?api_key='+api_key
     r=requests.get(res)
     if(r.status_code==200):
-        return r.json()['matches']
+        result=[]
+        for i in r.json()['matches']:
+            if(i['queue']==420):
+                result.append(i)
+        
+        return result
     elif(r.status_code==429):
         time.sleep(10)
         print("waiting")
-        return GetMatchdata(enc_summoner_id, api_key)
+        return GetMachList(enc_acc_id, api_key)
     else:
         print("Check api key or other problems.")
             
@@ -127,28 +139,36 @@ def ChallengerDivTable(api_key, option):
 def MatchDataTable(inputs,api_key):
     #Enc_ID, Match_ID, Champion, Result
     result=[]
+    matchlist=set()
     for i in inputs:
         #enc_acc_id=i['summonerId']    
         enc_acc_id=i
-        matchlist=GetMachList(enc_acc_id, api_key)
-        print(len(matchlist)," of games detected with ", i)
-        elem=[enc_acc_id, 0,0,0]
-        for j in matchlist:
-            GameData=GetMatchData(j['gameId'], api_key)
-            # print(GameData)
-            elem[1]=j['gameId']
-            elem[2]=[]
-            for k in GameData['participants']:
-                elem[2].append([k['teamId'], k['championId']])
-            elem[3]=[]
-            for k in GameData['teams']:
-                elem[3].append([k['teamId'], k['win']])
-            print (elem)
-    return 
-
-MatchDataTable(["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78"], "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961")
-
+        l=GetMachList(enc_acc_id, api_key)
+        print(len(l), "of matchlists detected")
+        for j in l:
+            matchlist.add(j['gameId'])
+        
+    print(len(matchlist),"of matches detected")
+    elem=[0,0,0]
+    for j in matchlist:
+        GameData=GetMatchData(j, api_key)
+        # print(GameData)
+        elem[0]=j
+        elem[1]=[]
+        for k in GameData['participants']:
+            elem[1].append([k['teamId'], champion[str(k['championId'])]])
+        elem[2]=[]
+        for k in GameData['teams']:
+            elem[2].append([k['teamId'], k['win']])
+        result.append(elem)
+        print (elem)
+    return result
+chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
+#print(GetMachList("RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78", "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
+#MatchDataTable(chalenckey, "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961")
+print(GetMatchData("4339025922","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
 """
+[4339025922, [[100, 'Leblanc'], [100, 'XinZhao'], [100, 'Tristana'], [100, 'Bard'], [100, 'Aphelios'], [200, 'Trundle'], [200, 'Yuumi'], [200, 'Ezreal'], [200, 'Kalista'], [200, 'Syndra']], [[100, 'Fail'], [200, 'Win']]]
 How To Get Match Data
 1. Get Summoner Name that contians Summoner's Id
 2. Get Summoner Id that contians Summoner's acc id
