@@ -7,6 +7,7 @@ Created on Sun May 17 19:56:27 2020
 import requests
 import time
 import json
+
 summoner="코코낸내2"
 
 with open('champion.json',encoding='UTF8') as json_file:
@@ -105,7 +106,10 @@ def GetMachList(enc_acc_id, api_key):
         time.sleep(60)
         return GetMachList(enc_acc_id, api_key)
     else:
+        print(r.status_code)
         print("Check api key or other problems.")
+        time.sleep(60)
+        return GetMachList(enc_acc_id, api_key)
             
     
 def GetMatchData(match_id, api_key):
@@ -124,6 +128,8 @@ def GetMatchData(match_id, api_key):
     else:
         print(r.status_code)
         print("Check api key or other problems.")
+        time.sleep(60)
+        return GetMatchData(match_id, api_key)
         
 def ChallengerDivTable(api_key, option):
     chall=GetChallengerDiv(api_key)
@@ -147,20 +153,24 @@ def ChallengerDivTable(api_key, option):
 
 def MatchDataTable(inputs,api_key):
     #Enc_ID, Match_ID, Champion, Result
-    f=open("gamedata.txt", "w")
+    f=open("gamedata0606.txt", "w")
     result=[]
     matchlist=set()
+    exitbool=False
     for i in inputs:
         #enc_acc_id=i['summonerId']    
         enc_acc_id=i
         l=GetMachList(enc_acc_id, api_key)
         print(len(l), "of matchlists detected")
         for j in l:
-            print(j['gameId'])
-            f.write(str(j['gameId'])+"\n")
+            #print(j['gameId'])
+            #f.write(str(j['gameId'])+"\n")
             matchlist.add(j['gameId'])
-        
-    print(len(matchlist),"of matches detected")
+            if(len(matchlist)==2000):
+                exitbool=True
+        if(exitbool):
+            break;
+    print(len(matchlist),"of matches detected in total")
     elem=[0,0,0]
     for j in matchlist:
         GameData=GetMatchData(j, api_key)
@@ -179,7 +189,14 @@ def MatchDataTable(inputs,api_key):
     return result
 chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
 #print(GetMachList("RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78", "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
-MatchDataTable(chalenckey, "RGAPI-b2f8401c-d3b5-4bb5-bedd-89ef23d181ba")
+challkeys=[]
+f=open("../ChallengerDiv.txt", "r")
+line=f.readline()
+while(line):
+    print(line.split(',')[0][2:-1])    
+    line=f.readline()
+    challkeys.append(line.split(',')[0][2:-1])
+MatchDataTable(challkeys, "RGAPI-34d7ad13-eaa0-4b5e-b452-0b180560aacf")
 #print(GetMatchData("4423996367","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
 """
 [4339025922, [[100, 'Leblanc'], [100, 'XinZhao'], [100, 'Tristana'], [100, 'Bard'], [100, 'Aphelios'], [200, 'Trundle'], [200, 'Yuumi'], [200, 'Ezreal'], [200, 'Kalista'], [200, 'Syndra']], [[100, 'Fail'], [200, 'Win']]]
