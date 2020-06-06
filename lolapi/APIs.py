@@ -100,6 +100,10 @@ def GetMachList(enc_acc_id, api_key):
         time.sleep(10)
         print("waiting")
         return GetMachList(enc_acc_id, api_key)
+    elif(r.status_code==504):
+        print("504 Gateway timeout")
+        time.sleep(60)
+        return GetMachList(enc_acc_id, api_key)
     else:
         print("Check api key or other problems.")
             
@@ -113,7 +117,12 @@ def GetMatchData(match_id, api_key):
         time.sleep(10)
         print("waiting")
         return GetMatchData(match_id, api_key)
+    elif(r.status_code==504):
+        print("504 Gateway timeout")
+        time.sleep(60)
+        return GetMatchData(match_id, api_key)
     else:
+        print(r.status_code)
         print("Check api key or other problems.")
         
 def ChallengerDivTable(api_key, option):
@@ -138,6 +147,7 @@ def ChallengerDivTable(api_key, option):
 
 def MatchDataTable(inputs,api_key):
     #Enc_ID, Match_ID, Champion, Result
+    f=open("gamedata.txt", "w")
     result=[]
     matchlist=set()
     for i in inputs:
@@ -146,6 +156,8 @@ def MatchDataTable(inputs,api_key):
         l=GetMachList(enc_acc_id, api_key)
         print(len(l), "of matchlists detected")
         for j in l:
+            print(j['gameId'])
+            f.write(str(j['gameId'])+"\n")
             matchlist.add(j['gameId'])
         
     print(len(matchlist),"of matches detected")
@@ -162,11 +174,13 @@ def MatchDataTable(inputs,api_key):
             elem[2].append([k['teamId'], k['win']])
         result.append(elem)
         print (elem)
+        f.write(str(elem)+"\n")
+    f.close()
     return result
 chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
 #print(GetMachList("RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78", "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
-#MatchDataTable(chalenckey, "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961")
-print(GetMatchData("4339025922","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
+MatchDataTable(chalenckey, "RGAPI-b2f8401c-d3b5-4bb5-bedd-89ef23d181ba")
+#print(GetMatchData("4423996367","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
 """
 [4339025922, [[100, 'Leblanc'], [100, 'XinZhao'], [100, 'Tristana'], [100, 'Bard'], [100, 'Aphelios'], [200, 'Trundle'], [200, 'Yuumi'], [200, 'Ezreal'], [200, 'Kalista'], [200, 'Syndra']], [[100, 'Fail'], [200, 'Win']]]
 How To Get Match Data
