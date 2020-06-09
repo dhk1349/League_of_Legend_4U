@@ -199,10 +199,10 @@ challkeys=[]
 f=open("ChallengerDiv0609.txt", "r")
 line=f.readline()
 while(line):
-    print(line.split(',')[0][2:-1])    
+    if(line.split('|')[0]!='None'):
+        print(line.split('|'))  
+        challkeys.append(line.split('|')[0])
     line=f.readline()
-    challkeys.append(line.split(',')[0][2:-1])
-
 MatchDataTable(challkeys, "RGAPI-6014d53d-88ea-4390-a23a-8c96fe055e41")
 
 #print(GetMatchData("4423996367","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))

@@ -25,4 +25,4 @@ def GameDataParser(path):
     return
 
 
-GameDataParser('C:\\Users\\dhk13\\Documents\\GitHub\\League_of_Legend_4U\\lolapi\\gamedata0609.txt')
+GameDataParser("C:/Users/한동훈/Desktop/Github/League_of_Legend_4U/lolapi/gamedata0609.txt")
