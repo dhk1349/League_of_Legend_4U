@@ -11,6 +11,8 @@ import os
 os.putenv('NLS_LANG', '.UTF8')
 
 #연결에 필요한 기본 정보 (유저, 비밀번호, 데이터베이스 서버 주소)
+
+
 connection = cx_Oracle.connect('admin','','lolgg.culykwl5fmgv.ap-northeast-2.rds.amazonaws.com:1521/ORCL')
 
 cursor = connection.cursor()
@@ -24,25 +26,27 @@ def GameDataParser(path):
     f=open(path, 'r')
     line=f.readline()
     while (line):
-        print(line)
-        row1=[int(line.split('|')[0]),1,line.split('|')[3][0]]
-        row2=[int(line.split('|')[0]),2,line.split('|')[3][1]]
-        
+        row1=[int(line.split('|')[0]),1,line.split('|')[3].split(',')[0][0]]
+        row2=[int(line.split('|')[0]),2,line.split('|')[3].split(',')[1][0]]
+
         cursor.execute("""
-                       INSERT INTO
-                       MATCHDATA (GameId, Team, Result_)
-                       VALUES(:1, :2, :3)
+                       INSERT INTO MATCHDATA (GameId, Team, Result_) VALUES(:1, :2, :3)
                        """, row1
                        )
+        connection.commit()
         cursor.execute("""
-                       INSERT INTO
-                       MATCHDATA (GameId, Team, Result_)
-                       VALUES(:1, :2, :3)
-                       """, row2
+                       INSERT INTO MATCHDATA (GameId, Team, Result_) VALUES(:1, :2, :3)
+                       """,row2
                        )
+        
+        connection.commit()
+        print(row1)
+        print(row2)
         line=f.readline()
     return
 
 
-GameDataParser("C:/Users/한동훈/Desktop/Github/League_of_Legend_4U/lolapi/gamedata0609.txt")
+GameDataParser("C:/Users/dhk13/Documents/GitHub/League_of_Legend_4U/lolapi/gamedata0609.txt")
 
+cursor.close()
+connection.close()
