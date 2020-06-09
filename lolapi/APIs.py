@@ -136,16 +136,16 @@ def ChallengerDivTable(api_key, option):
     result=[]
     print(len(chall), " of challengers detected")
     for i in chall:
-        elem=[]
-        elem.append(GetEncId(i['summonerName'], api_key))
-        elem.append(i['summonerId'])
-        elem.append(i['summonerName'])
-        elem.append(i['rank'])
-        elem.append(i['leaguePoints'])
+        elem=""
+        elem=elem+str((GetEncId(i['summonerName'], api_key)))+"|"
+        elem=elem+str(i['summonerId'])+"|"
+        elem=elem+str(i['summonerName'])+"|"
+        elem=elem+str(i['rank'])+"|"
+        elem=elem+str(i['leaguePoints'])+"|"
         result.append(elem)
         print(elem)
     if option=="-t":
-        f=open("ChallengerDiv.txt", "w")
+        f=open("ChallengerDiv0609.txt", "w")
         for i in result:
             f.write(str(i)+"\n")
         f.close()
@@ -153,7 +153,7 @@ def ChallengerDivTable(api_key, option):
 
 def MatchDataTable(inputs,api_key):
     #Enc_ID, Match_ID, Champion, Result
-    f=open("gamedata0606.txt", "w")
+    f=open("gamedata0609.txt", "w")
     result=[]
     matchlist=set()
     exitbool=False
@@ -175,28 +175,36 @@ def MatchDataTable(inputs,api_key):
     for j in matchlist:
         GameData=GetMatchData(j, api_key)
         # print(GameData)
-        elem[0]=j
-        elem[1]=[]
-        for k in GameData['participants']:
-            elem[1].append([k['teamId'], champion[str(k['championId'])]])
-        elem[2]=[]
+        #저장방
+        #게임 id | 100,aa,bb,cc|200,aa,bb,cc|win, loss
+        elem=""
+        elem=elem+str(j)+"|"
+        for k in range(len(GameData['participants'])):
+            if(k==5):
+                elem=elem+"|"
+            elem=elem+str(GameData['participants'][k]['championId'])+","
+        elem=elem+"|"
         for k in GameData['teams']:
-            elem[2].append([k['teamId'], k['win']])
+            elem=elem+str(k['win'])+","
         result.append(elem)
         print (elem)
         f.write(str(elem)+"\n")
     f.close()
     return result
-chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
+#chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
 #print(GetMachList("RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78", "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
+ChallengerDivTable("RGAPI-6014d53d-88ea-4390-a23a-8c96fe055e41", "-t")
+
 challkeys=[]
-f=open("../ChallengerDiv.txt", "r")
+f=open("ChallengerDiv0609.txt", "r")
 line=f.readline()
 while(line):
     print(line.split(',')[0][2:-1])    
     line=f.readline()
     challkeys.append(line.split(',')[0][2:-1])
-MatchDataTable(challkeys, "RGAPI-34d7ad13-eaa0-4b5e-b452-0b180560aacf")
+
+MatchDataTable(challkeys, "RGAPI-6014d53d-88ea-4390-a23a-8c96fe055e41")
+
 #print(GetMatchData("4423996367","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
 """
 [4339025922, [[100, 'Leblanc'], [100, 'XinZhao'], [100, 'Tristana'], [100, 'Bard'], [100, 'Aphelios'], [200, 'Trundle'], [200, 'Yuumi'], [200, 'Ezreal'], [200, 'Kalista'], [200, 'Syndra']], [[100, 'Fail'], [200, 'Win']]]
