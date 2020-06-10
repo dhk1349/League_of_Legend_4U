@@ -8,14 +8,14 @@ import requests
 import time
 import json
 
-summoner="코코낸내2"
-
+"""
 with open('champion.json',encoding='UTF8') as json_file:
     champion_parser = json.load(json_file)['data']
 champion={}
 for name, data in champion_parser.items():
     champion[str(data['key'])]=name
 
+"""
 
 def GetSummonerInfo(summoner_name , api_key):
     res = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" +summoner_name +'?api_key=' + api_key
@@ -193,6 +193,8 @@ def MatchDataTable(inputs,api_key):
     return result
 #chalenckey=["RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78",'eqfglHsSwSl-Fh0ngiZdowI6CinBw6CYhzQPTIngwvs','sYfPGpcXWexXL2rtLx9VgKtQffsu2fXpJBWB_ENuFQBIV8w','g4wToX2XzT-XNpGn2wzbRPawkQxHFmbvB-qfaNDqmDR9WAM']
 #print(GetMachList("RCccsD-o33FTLi_VMk-hNKCkojWvXWV5W8gKCgMtnk_yb5OF7JoyW-78", "RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
+
+"""
 ChallengerDivTable("RGAPI-6014d53d-88ea-4390-a23a-8c96fe055e41", "-t")
 
 challkeys=[]
@@ -204,7 +206,7 @@ while(line):
         challkeys.append(line.split('|')[0])
     line=f.readline()
 MatchDataTable(challkeys, "RGAPI-6014d53d-88ea-4390-a23a-8c96fe055e41")
-
+"""
 #print(GetMatchData("4423996367","RGAPI-4ee81316-3c0d-446f-8072-dae173fd2961"))
 """
 [4339025922, [[100, 'Leblanc'], [100, 'XinZhao'], [100, 'Tristana'], [100, 'Bard'], [100, 'Aphelios'], [200, 'Trundle'], [200, 'Yuumi'], [200, 'Ezreal'], [200, 'Kalista'], [200, 'Syndra']], [[100, 'Fail'], [200, 'Win']]]
