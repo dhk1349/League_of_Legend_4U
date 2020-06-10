@@ -66,7 +66,10 @@ def GetChallengerDiv(api_key):
         print("waiting")
         return GetChallengerDiv(api_key)
     else:
+        time.sleep(10)
         print("Check api key or other problems.")
+        return GetChallengerDiv(api_key)
+        
 """
 result=GetChallengerDiv(api_key)
 for i in result:
